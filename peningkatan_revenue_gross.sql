@@ -1,4 +1,6 @@
-select 'NIPOS'sumber,COUNT(*)produksi,
+select 'NIPOS'sumber,
+'GROSS' keterangan,
+COUNT(*)produksi,
 SUM(np.connote__connote_amount)+
 SUM(
         CASE 
@@ -24,6 +26,7 @@ union all
 --trx glid
 select
 'GLID' sumber,
+'GROSS' keterangan,
     COUNT(t3.order_code) AS produksi,
         SUM(t3.total_amount )pendapatan
 FROM (
@@ -56,7 +59,7 @@ FROM (
         END
 ) t3
 union
-SELECT jenis_feeder sumber,SUM(produksi)produksi,SUM(pendapatan)pendapatan
+SELECT jenis_feeder sumber,'GROSS' keterangan,SUM(produksi)produksi,SUM(pendapatan)pendapatan
 FROM sap.feeder_sap
 where tgltr>='20260101'
 group by 1
