@@ -1,5 +1,6 @@
 select 'NIPOS'sumber,
 'GROSS' keterangan,
+DATE_trunc('month',connote__created_at)connote__created_at,
 COUNT(*)produksi,
 SUM(np.connote__connote_amount)+
 SUM(
@@ -22,11 +23,13 @@ WHERE
     AND connote__connote_amount >= 0
     AND connote__connote_service != 'LNINCOMING'
     AND UPPER(connote__connote_state) NOT IN ('CANCEL', 'PENDING')
+group by DATE_trunc('month',connote__created_at)
 union all
 --trx glid
 select
 'GLID' sumber,
 'GROSS' keterangan,
+DATE_trunc('month',connote__created_at)connote__created_at,
     COUNT(t3.order_code) AS produksi,
         SUM(t3.total_amount )pendapatan
 FROM (
@@ -58,11 +61,13 @@ FROM (
             ELSE 'WIN'
         END
 ) t3
+group by DATE_trunc('month',connote__created_at)
 union
 SELECT jenis_feeder sumber,
 'GROSS' keterangan,
+DATE_TRUNC('month',date(tgltr))connote__created_at,
 SUM(produksi)produksi,
 SUM(pendapatan)+SUM(pajak)pendapatan
 FROM sap.feeder_sap
-where tgltr>='20260101'
-group by 1
+where date(tgltr)>='20260101'
+group by jenis_feeder,DATE_TRUNC('month',date(tgltr))
