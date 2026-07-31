@@ -1,4 +1,4 @@
-select 'NIPOS'sumber,COUNT(*)produksi,
+select 'NIPOS'sumber,'NET' keterangan,COUNT(*)produksi,
 SUM(
     COALESCE(connote__connote_service_price, 0) / 1.011
     + COALESCE(connote__connote_surcharge_amount, 0) / 1.11
@@ -26,7 +26,7 @@ WHERE
 union all
 --trx glid
 select
-'GLID' sumber,
+'GLID' sumber,'NET' keterangan,
     COUNT(t3.order_code) AS produksi,
     CAST(
         SUM(
@@ -67,7 +67,7 @@ FROM (
         END
 ) t3
 union
-SELECT jenis_feeder sumber,SUM(produksi)produksi,SUM(pendapatan)pendapatan
+SELECT jenis_feeder sumber,'NET' keterangan,SUM(produksi)produksi,SUM(pendapatan)pendapatan
 FROM sap.feeder_sap
 where tgltr>='20260101'
 group by 1
