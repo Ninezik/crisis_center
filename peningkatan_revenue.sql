@@ -1,4 +1,7 @@
-select 'NIPOS'sumber,'NET' keterangan,COUNT(*)produksi,
+select 'NIPOS'sumber,
+'NET' keterangan,
+DATE_trunc('month',connote__created_at)connote__created_at,
+COUNT(*)produksi,
 SUM(
     COALESCE(connote__connote_service_price, 0) / 1.011
     + COALESCE(connote__connote_surcharge_amount, 0) / 1.11
@@ -23,10 +26,12 @@ WHERE
     AND connote__connote_amount >= 0
     AND connote__connote_service != 'LNINCOMING'
     AND UPPER(connote__connote_state) NOT IN ('CANCEL', 'PENDING')
+group by DATE_trunc('month',connote__created_at)
 union all
 --trx glid
 select
 'GLID' sumber,'NET' keterangan,
+DATE_TRUNC('month',DATE(connote__created_at))connote__created_at,
     COUNT(t3.order_code) AS produksi,
     CAST(
         SUM(
@@ -66,8 +71,11 @@ FROM (
             ELSE 'WIN'
         END
 ) t3
+group by DATE_TRUNC('month',DATE(connote__created_at))
 union
-SELECT jenis_feeder sumber,'NET' keterangan,SUM(produksi)produksi,SUM(pendapatan)pendapatan
+SELECT jenis_feeder sumber,'NET' keterangan,
+DATE_TRUNC('month',DATE(tgltr))connote__created_at,
+SUM(produksi)produksi,SUM(pendapatan)pendapatan
 FROM sap.feeder_sap
 where tgltr>='20260101'
-group by 1
+group by jenis_feeder,DATE_TRUNC('month',DATE(tgltr))
