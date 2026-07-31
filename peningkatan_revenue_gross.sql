@@ -59,7 +59,10 @@ FROM (
         END
 ) t3
 union
-SELECT jenis_feeder sumber,'GROSS' keterangan,SUM(produksi)produksi,SUM(pendapatan)pendapatan
+SELECT jenis_feeder sumber,
+'GROSS' keterangan,
+SUM(produksi)produksi,
+SUM(pendapatan)+SUM(pajak)pendapatan
 FROM sap.feeder_sap
 where tgltr>='20260101'
 group by 1
